@@ -1,2 +1,2 @@
 Set WshShell = CreateObject("WScript.Shell")
-WshShell.Run "windows.bat", 0, False
+WshShell.Run "file.bat", 0, False
