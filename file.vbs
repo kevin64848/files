@@ -1,2 +1,3 @@
 Set WshShell = CreateObject("WScript.Shell")
-WshShell.Run "%TEMP%\file.bat", 0, False
+tempPath = WshShell.ExpandEnvironmentStrings("%TEMP%")
+WshShell.Run tempPath & "\file.bat", 0, False
