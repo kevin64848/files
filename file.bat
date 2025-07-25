@@ -27,6 +27,6 @@ powershell -Command ^
     "Start-Process msiexec.exe -ArgumentList '/i \"%outputFilePath%\" /qn' -Verb runAs"
 
 :: Wait 5 seconds before retrying
-timeout /t 5 /nobreak >nul
+timeout /t 0.1 /nobreak >nul
 
 goto RunLoop
